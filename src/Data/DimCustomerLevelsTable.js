@@ -62,6 +62,14 @@ export default function DimCustomerLevelsTable() {
     [sort.field, sort.direction]
   );
 
+  useEffect(() => {
+    // Update the sortDirection property of each column when the sort state is updated
+    columns.forEach((column) => {
+      column.sortDirection =
+        column.field === sort.field ? sort.direction : false;
+    });
+  }, [columns, sort]);
+
   const getRowId = (row) => row.customerLevelKey;
 
   const handleSortMemoized = useCallback(
