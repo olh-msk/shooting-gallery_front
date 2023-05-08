@@ -15,7 +15,10 @@ const handleSort =
 
 export default function DimCustomerLevelsTable() {
   const [customerLevels, setCustomerLevels] = useState([]);
-  const [sort, setSort] = useState({ field: '', direction: 'asc' });
+  const [sort, setSort] = useState({
+    field: 'customerLevelKey',
+    direction: 'asc',
+  });
 
   const fetchData = async () => {
     const response = await fetch(`https://localhost:44300/DimCustomerLevel`);
@@ -71,7 +74,9 @@ export default function DimCustomerLevelsTable() {
       <DataGrid
         rows={customerLevels}
         columns={columns}
-        sortModel={[{ field: sort.field, sort: sort.direction }]}
+        sortModel={[
+          { field: sort.field || 'customerLevelKey', sort: sort.direction },
+        ]}
         onSortModelChange={(model) => {
           const { field, sort: direction } = model[0] || {};
           handleSortMemoized(field, direction);
