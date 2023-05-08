@@ -1,5 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+
+const handleSort =
+  (customerLevels, setCustomerLevels, setSort) => (field, direction) => {
+    const sortedCustomerLevels = [...customerLevels].sort((a, b) => {
+      const sortDirection = direction === 'asc' ? 1 : -1;
+      return (
+        sortDirection * (a[field] < b[field] ? -1 : a[field] > b[field] ? 1 : 0)
+      );
+    });
+    setCustomerLevels(sortedCustomerLevels);
+    setSort({ field, direction });
+  };
 
 export default function DimCustomerLevelsTable() {
   const [customerLevels, setCustomerLevels] = useState([]);
@@ -15,45 +27,44 @@ export default function DimCustomerLevelsTable() {
     fetchData().then((data) => setCustomerLevels(data));
   }, []);
 
-  const handleSort = (field, direction) => {
-    const sortedCustomerLevels = [...customerLevels].sort((a, b) => {
-      const sortDirection = direction === 'asc' ? 1 : -1;
-      return (
-        sortDirection * (a[field] < b[field] ? -1 : a[field] > b[field] ? 1 : 0)
-      );
-    });
-    setCustomerLevels(sortedCustomerLevels);
-    setSort({ field, direction });
-  };
-
-  const columns = [
-    {
-      field: 'customerLevelKey',
-      headerName: 'Customer Level Key',
-      sortable: true,
-      width: 200,
-      minWidth: 150,
-      sortDirection: sort.field === 'customerLevelKey' ? sort.direction : false,
-    },
-    {
-      field: 'customerLevelId',
-      headerName: 'Customer Level ID',
-      sortable: true,
-      width: 200,
-      minWidth: 150,
-      sortDirection: sort.field === 'customerLevelId' ? sort.direction : false,
-    },
-    {
-      field: 'levelName',
-      headerName: 'Level Name',
-      sortable: true,
-      width: 300,
-      minWidth: 200,
-      sortDirection: sort.field === 'levelName' ? sort.direction : false,
-    },
-  ];
+  const columns = useMemo(
+    () => [
+      {
+        field: 'customerLevelKey',
+        headerName: 'Customer Level Key',
+        sortable: true,
+        width: 200,
+        minWidth: 150,
+        sortDirection:
+          sort.field === 'customerLevelKey' ? sort.direction : false,
+      },
+      {
+        field: 'customerLevelId',
+        headerName: 'Customer Level ID',
+        sortable: true,
+        width: 200,
+        minWidth: 150,
+        sortDirection:
+          sort.field === 'customerLevelId' ? sort.direction : false,
+      },
+      {
+        field: 'levelName',
+        headerName: 'Level Name',
+        sortable: true,
+        width: 300,
+        minWidth: 200,
+        sortDirection: sort.field === 'levelName' ? sort.direction : false,
+      },
+    ],
+    [sort.field, sort.direction]
+  );
 
   const getRowId = (row) => row.customerLevelKey;
+
+  const handleSortMemoized = useCallback(
+    handleSort(customerLevels, setCustomerLevels, setSort),
+    [customerLevels, setCustomerLevels, setSort]
+  );
 
   return (
     <div style={{ height: 400, width: '100%' }}>
@@ -63,7 +74,7 @@ export default function DimCustomerLevelsTable() {
         sortModel={[{ field: sort.field, sort: sort.direction }]}
         onSortModelChange={(model) => {
           const { field, sort: direction } = model[0] || {};
-          handleSort(field, direction);
+          handleSortMemoized(field, direction);
         }}
         getRowId={getRowId}
       />
