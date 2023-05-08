@@ -7,9 +7,4 @@ async function getCalibers() {
   return response.data;
 }
 
-async function getDimCustomerLevels() {
-  const response = await axios.get(`${API_URL}/DimCustomerLevel`);
-  return response.data;
-}
-
-export { getCalibers, getDimCustomerLevels };
+export { getCalibers };

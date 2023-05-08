@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="App">
       <h1>Calibers</h1>
-      <CalibersList />
+      {/* <CalibersList /> */}
       <DimCustomerLevelsTable />
     </div>
   );
