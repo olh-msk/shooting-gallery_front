@@ -1,14 +1,20 @@
-import './App.css';
-import DimCustomerLevelsTable from './Data/DimCustomerLevelsTable';
-import FactShowTable from './Data/FactShow';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import LoginPage from './Data/LoginPage';
+import FactShowTable from './Data/FactShowTable';
+import DimCustomerLevelsGiagram from './Data/DimCustomerLevelsDiagram';
 
 function App() {
   return (
-    <div className="App">
-      <h1>FactShow</h1>
-      {/* <DimCustomerLevelsTable /> */}
-      <FactShowTable />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/factshow" element={<FactShowTable />} />
+        <Route
+          path="/customerLevelsDiagram"
+          element={<DimCustomerLevelsGiagram />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
