@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -13,7 +13,7 @@ import Paper from '@mui/material/Paper';
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 
-export default function Chart() {
+export default function CaliberTypeQuantity() {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
 
@@ -26,30 +26,27 @@ export default function Chart() {
   }, []);
 
   const chartData = data.reduce((acc, curr) => {
-    const { periodStartDay, periodEndDay, customerLevelName, totalIncome } =
-      curr;
+    const { periodStartDay, periodEndDay, caliberType, quantity } = curr;
 
     const foundStart = acc.find((item) => item.dateRange === periodStartDay);
     const foundEnd = acc.find((item) => item.dateRange === periodEndDay);
 
     if (foundStart) {
-      foundStart[customerLevelName] =
-        (foundStart[customerLevelName] || 0) + totalIncome;
+      foundStart[caliberType] = (foundStart[caliberType] || 0) + quantity;
     } else {
       const newEntryStart = {
         dateRange: periodStartDay,
-        [customerLevelName]: totalIncome,
+        [caliberType]: quantity,
       };
       acc.push(newEntryStart);
     }
 
     if (foundEnd && periodEndDay !== periodStartDay) {
-      foundEnd[customerLevelName] =
-        (foundEnd[customerLevelName] || 0) + totalIncome;
+      foundEnd[caliberType] = (foundEnd[caliberType] || 0) + quantity;
     } else {
       const newEntryEnd = {
         dateRange: periodEndDay,
-        [customerLevelName]: totalIncome,
+        [caliberType]: quantity,
       };
       if (periodEndDay !== periodStartDay) {
         acc.push(newEntryEnd);
@@ -85,7 +82,7 @@ export default function Chart() {
           width: '80%',
         }}
       >
-        <LineChart
+        <BarChart
           width={1000}
           height={500}
           data={chartData}
@@ -95,24 +92,25 @@ export default function Chart() {
           <XAxis dataKey="dateRange" tickCount={chartData.length} />
           <YAxis
             label={{
-              value: 'Total Income',
+              value: 'Quantity',
               angle: -90,
               position: 'insideLeft',
             }}
           />
           <Tooltip />
           <Legend />
-          {chartData.some((dataPoint) => dataPoint.Bronze) && (
-            <Line type="monotone" dataKey="Bronze" stroke="#FF0000" />
+          {chartData.some((dataPoint) => dataPoint['9mm']) && (
+            <Bar dataKey="9mm" fill="#FF0000" />
           )}
-          {chartData.some((dataPoint) => dataPoint.Silver) && (
-            <Line type="monotone" dataKey="Silver" stroke="#00FF00" />
+          {chartData.some((dataPoint) => dataPoint['.45 ACP']) && (
+            <Bar dataKey=".45 ACP" fill="#00FF00" />
           )}
-          {chartData.some((dataPoint) => dataPoint.Gold) && (
-            <Line type="monotone" dataKey="Gold" stroke="#FFD700" />
+          {chartData.some((dataPoint) => dataPoint['5.56mm']) && (
+            <Bar dataKey="5.56mm" fill="#FFD700" />
           )}
-        </LineChart>
+        </BarChart>
       </Paper>
+
       <Button variant="contained" onClick={handleGoToTable}>
         Go to table
       </Button>

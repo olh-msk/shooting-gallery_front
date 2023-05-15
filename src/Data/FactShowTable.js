@@ -36,8 +36,17 @@ const FactShowTable = () => {
 
   const handleGoToCustomerLevelsDiagram = (event) => {
     event.preventDefault();
-
     navigate('/customerLevelsDiagram');
+  };
+
+  const handleGoToCaliberDiagram = (event) => {
+    event.preventDefault();
+    navigate('/caliberDiagram');
+  };
+
+  const handleGoToIncomeDiffDiagram = (event) => {
+    event.preventDefault();
+    navigate('/incomeDiffDiagram');
   };
 
   const handleGetDataClick = async () => {
@@ -153,6 +162,12 @@ const FactShowTable = () => {
       </Button>
       <Button variant="contained" onClick={handleGoToCustomerLevelsDiagram}>
         Go to customer level diagram
+      </Button>
+      <Button variant="contained" onClick={handleGoToCaliberDiagram}>
+        Go to calibers diagram
+      </Button>
+      <Button variant="contained" onClick={handleGoToIncomeDiffDiagram}>
+        Go to income difference
       </Button>
       <Table>
         <TableHead>

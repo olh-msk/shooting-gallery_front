@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -13,43 +13,44 @@ import Paper from '@mui/material/Paper';
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 
-export default function Chart() {
+export default function IncomeDiffDiagram() {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(`https://localhost:44300/FactShow`);
+      const result = await axios.get(
+        `https://localhost:44300/FactShow?fields=periodStartDay,periodEndDay,galleryName,incomeDifference`
+      );
       setData(result.data);
     };
     fetchData();
   }, []);
 
   const chartData = data.reduce((acc, curr) => {
-    const { periodStartDay, periodEndDay, customerLevelName, totalIncome } =
+    const { periodStartDay, periodEndDay, galleryName, incomeDifference } =
       curr;
 
     const foundStart = acc.find((item) => item.dateRange === periodStartDay);
     const foundEnd = acc.find((item) => item.dateRange === periodEndDay);
 
     if (foundStart) {
-      foundStart[customerLevelName] =
-        (foundStart[customerLevelName] || 0) + totalIncome;
+      foundStart[galleryName] =
+        (foundStart[galleryName] || 0) + incomeDifference;
     } else {
       const newEntryStart = {
         dateRange: periodStartDay,
-        [customerLevelName]: totalIncome,
+        [galleryName]: incomeDifference,
       };
       acc.push(newEntryStart);
     }
 
     if (foundEnd && periodEndDay !== periodStartDay) {
-      foundEnd[customerLevelName] =
-        (foundEnd[customerLevelName] || 0) + totalIncome;
+      foundEnd[galleryName] = (foundEnd[galleryName] || 0) + incomeDifference;
     } else {
       const newEntryEnd = {
         dateRange: periodEndDay,
-        [customerLevelName]: totalIncome,
+        [galleryName]: incomeDifference,
       };
       if (periodEndDay !== periodStartDay) {
         acc.push(newEntryEnd);
@@ -59,7 +60,6 @@ export default function Chart() {
     return acc;
   }, []);
 
-  // Sort chart data by date range in ascending order
   chartData.sort((a, b) => new Date(a.dateRange) - new Date(b.dateRange));
 
   const handleGoToTable = (event) => {
@@ -85,7 +85,7 @@ export default function Chart() {
           width: '80%',
         }}
       >
-        <LineChart
+        <BarChart
           width={1000}
           height={500}
           data={chartData}
@@ -95,24 +95,25 @@ export default function Chart() {
           <XAxis dataKey="dateRange" tickCount={chartData.length} />
           <YAxis
             label={{
-              value: 'Total Income',
+              value: 'Income Difference',
               angle: -90,
               position: 'insideLeft',
             }}
           />
           <Tooltip />
           <Legend />
-          {chartData.some((dataPoint) => dataPoint.Bronze) && (
-            <Line type="monotone" dataKey="Bronze" stroke="#FF0000" />
+          {chartData.some((dataPoint) => dataPoint['Target Range']) && (
+            <Bar dataKey="Target Range" fill="#FF0000" />
           )}
-          {chartData.some((dataPoint) => dataPoint.Silver) && (
-            <Line type="monotone" dataKey="Silver" stroke="#00FF00" />
+          {chartData.some((dataPoint) => dataPoint['Guns & Ammo']) && (
+            <Bar dataKey="Guns & Ammo" fill="#00FF00" />
           )}
-          {chartData.some((dataPoint) => dataPoint.Gold) && (
-            <Line type="monotone" dataKey="Gold" stroke="#FFD700" />
+          {chartData.some((dataPoint) => dataPoint['Shooting Sports']) && (
+            <Bar dataKey="Shooting Sports" fill="#FFD700" />
           )}
-        </LineChart>
+        </BarChart>
       </Paper>
+
       <Button variant="contained" onClick={handleGoToTable}>
         Go to table
       </Button>
