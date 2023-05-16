@@ -10,12 +10,10 @@ import {
   Legend,
 } from 'recharts';
 import Paper from '@mui/material/Paper';
-import { useNavigate } from 'react-router-dom';
-import Button from '@mui/material/Button';
+import PageBar from './PageBar';
 
 export default function Chart() {
   const [data, setData] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,60 +60,69 @@ export default function Chart() {
   // Sort chart data by date range in ascending order
   chartData.sort((a, b) => new Date(a.dateRange) - new Date(b.dateRange));
 
-  const handleGoToTable = (event) => {
-    event.preventDefault();
-    navigate('/factshow');
-  };
-
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        backgroundColor: '#f5f5f5',
-      }}
-    >
-      <Paper
+    <>
+      <PageBar />
+      <div
         style={{
-          padding: '16px',
-          textAlign: 'center',
-          color: '#333',
-          width: '80%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
         }}
       >
-        <LineChart
-          width={1000}
-          height={500}
-          data={chartData}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        <Paper
+          style={{
+            padding: '16px',
+            textAlign: 'center',
+            color: '#333',
+            width: '50%',
+          }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="dateRange" tickCount={chartData.length} />
-          <YAxis
-            label={{
-              value: 'Total Income',
-              angle: -90,
-              position: 'insideLeft',
-            }}
-          />
-          <Tooltip />
-          <Legend />
-          {chartData.some((dataPoint) => dataPoint.Bronze) && (
-            <Line type="monotone" dataKey="Bronze" stroke="#FF0000" />
-          )}
-          {chartData.some((dataPoint) => dataPoint.Silver) && (
-            <Line type="monotone" dataKey="Silver" stroke="#00FF00" />
-          )}
-          {chartData.some((dataPoint) => dataPoint.Gold) && (
-            <Line type="monotone" dataKey="Gold" stroke="#FFD700" />
-          )}
-        </LineChart>
-      </Paper>
-      <Button variant="contained" onClick={handleGoToTable}>
-        Go to table
-      </Button>
-    </div>
+          <LineChart
+            width={1000}
+            height={500}
+            data={chartData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="dateRange" tickCount={chartData.length} />
+            <YAxis
+              label={{
+                value: 'Total Income',
+                angle: -90,
+                position: 'insideLeft',
+              }}
+            />
+            <Tooltip />
+            <Legend />
+            {chartData.some((dataPoint) => dataPoint.Bronze) && (
+              <Line
+                type="monotone"
+                dataKey="Bronze"
+                stroke="#CD7F32"
+                strokeWidth={3}
+              />
+            )}
+            {chartData.some((dataPoint) => dataPoint.Silver) && (
+              <Line
+                type="monotone"
+                dataKey="Silver"
+                stroke="silver"
+                strokeWidth={3}
+              />
+            )}
+            {chartData.some((dataPoint) => dataPoint.Gold) && (
+              <Line
+                type="monotone"
+                dataKey="Gold"
+                stroke="gold"
+                strokeWidth={3}
+              />
+            )}
+          </LineChart>
+        </Paper>
+      </div>
+    </>
   );
 }

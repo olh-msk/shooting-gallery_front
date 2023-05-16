@@ -4,6 +4,9 @@ import FactShowTable from './Data/FactShowTable';
 import DimCustomerLevelsGiagram from './Data/DimCustomerLevelsDiagram';
 import CaliberTypeQuantity from './Data/CiliberTypeQuantity';
 import IncomeDiffDiagram from './Data/IncomeDiffDiagram';
+import OltpMetadata from './Data/OltpMetadata';
+import Dimensions from './Data/Dimensions';
+import TaskTables from './Data/TaskTables';
 
 function App() {
   return (
@@ -17,6 +20,9 @@ function App() {
         />
         <Route path="/caliberDiagram" element={<CaliberTypeQuantity />} />
         <Route path="/incomeDiffDiagram" element={<IncomeDiffDiagram />} />
+        <Route path="/oltpMeta" element={<OltpMetadata />} />
+        <Route path="/dimensions" element={<Dimensions />} />
+        <Route path="/taskTables" element={<TaskTables />} />
       </Routes>
     </BrowserRouter>
   );
